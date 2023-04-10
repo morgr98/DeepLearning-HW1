@@ -102,9 +102,9 @@ def l2_dist(x1: Tensor, x2: Tensor):
 
     dists = None
     # ====== YOUR CODE: ======
-    #raise NotImplementedError()
-    # ========================
     dists = torch.sqrt((x1 ** 2).sum(dim=1, keepdim=True) + (x2 ** 2).sum(dim=1, keepdim=True).T - 2 * (x1 @ x2.T))
+    # ========================
+    
     return dists
 
 def accuracy(y: Tensor, y_pred: Tensor):
@@ -122,9 +122,12 @@ def accuracy(y: Tensor, y_pred: Tensor):
     accuracy = None
     # ====== YOUR CODE: ======
     #raise NotImplementedError()
+   #list_accur = [y[i] == y_pred[i] for i in range(len(y))]
+   #accuracy = sum(list_accur)/len(y)
+    diff = y - y_pred
+    accuracy = (y.shape[0] - torch.count_nonzero(diff)) / y.shape[0]
+    print(f"accuracy={accuracy}")
     # ========================
-    list_accur = [y[i] == y_pred[i] for i in range(len(y))]
-    accuracy = sum(list_accur)/len(y)
     return accuracy
 
 
@@ -155,6 +158,18 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
 
         # ====== YOUR CODE: ======
         #raise NotImplementedError()
+        fold_size = int(len(ds_train) // num_folds)
+        accuracies.append([])
+        index_listed = list(range(len(ds_train)))
+        for j in range(num_folds):
+            dl_valid = DataLoader(dataset=ds_train, batch_size=fold_size,
+                                  sampler=torch.utils.data.SubsetRandomSampler(index_listed[j * fold_size:(j + 1) * fold_size]))
+            train_loader = DataLoader(dataset=ds_train, batch_size=(len(ds_train) - fold_size),
+                                      sampler=torch.utils.data.SubsetRandomSampler(index_listed[:j * fold_size] + index_listed[(j + 1) * fold_size:]))
+            
+            model.train(train_loader)
+            y_pred = model.predict(dataloader_utils.flatten(dl_valid)[0])
+            accuracies[i].append(accuracy(y_pred, dataloader_utils.flatten(dl_valid)[1]))
         # ========================
         
 
@@ -162,3 +177,4 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
     best_k = k_choices[best_k_idx]
 
     return best_k, accuracies
+        

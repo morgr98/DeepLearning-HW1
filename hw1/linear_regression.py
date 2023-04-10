@@ -32,7 +32,7 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
 
         y_pred = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        y_pred = X @ self.weights_
         # ========================
 
         return y_pred
@@ -51,7 +51,9 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
 
         w_opt = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        lambda_i = np.identity(X.shape[1]) * self.reg_lambda * X.shape[0]
+        lambda_i[0][0] = 0
+        w_opt = np.linalg.pinv(X.T @ X + lambda_i) @ (X.T @ y)
         # ========================
 
         self.weights_ = w_opt
@@ -77,7 +79,11 @@ def fit_predict_dataframe(
     """
     # TODO: Implement according to the docstring description.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    if feature_names == None or feature_names == []:
+        X = df.drop(columns = [target_name])
+    else:
+        X = df[feature_names]
+    y_pred = model.fit_predict(X, df[target_name])
     # ========================
     return y_pred
 
@@ -100,7 +106,8 @@ class BiasTrickTransformer(BaseEstimator, TransformerMixin):
 
         xb = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        ones = np.ones((X.shape[0], 1), dtype=X.dtype)
+        xb = np.hstack((ones, X))
         # ========================
 
         return xb
@@ -117,7 +124,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
         # TODO: Your custom initialization, if needed
         # Add any hyperparameters you need and save them as above
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        #raise NotImplementedError()
         # ========================
 
     def fit(self, X, y=None):
@@ -139,7 +146,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
 
         X_transformed = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        X_transformed = PolynomialFeatures(self.degree, include_bias=False).fit_transform(X)
         # ========================
 
         return X_transformed
@@ -163,9 +170,19 @@ def top_correlated_features(df: DataFrame, target_feature, n=5):
     # TODO: Calculate correlations with target and sort features by it
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
-    # ========================
+    correlation_scores = []
+    target = df[target_feature]
 
+    for feature in df.columns:
+        if feature == 'MEDV':
+            continue
+        corr = abs(df[target_feature]. corr(df[feature]))
+        correlation_scores.append((corr, feature))
+    correlation_scores = sorted(correlation_scores, reverse=True)[:n]
+    top_n_features = [feature[1] for feature in correlation_scores]
+    top_n_corr = [feature[0] for feature in correlation_scores]
+    # ========================
+    
     return top_n_features, top_n_corr
 
 
@@ -179,7 +196,7 @@ def mse_score(y: np.ndarray, y_pred: np.ndarray):
 
     # TODO: Implement MSE using numpy.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    mse = np.mean(np.square(y - y_pred))
     # ========================
     return mse
 
@@ -194,7 +211,9 @@ def r2_score(y: np.ndarray, y_pred: np.ndarray):
 
     # TODO: Implement R^2 using numpy.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    top = (np.square(y - y_pred)).sum()
+    bot = (np.square(y - np.mean(y))).sum()
+    r2 = 1 - top / bot
     # ========================
     return r2
 
@@ -227,7 +246,12 @@ def cv_best_hyperparams(
     #  - You can use MSE or R^2 as a score.
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    k_fold = sklearn.model_selection.KFold(k_folds,shuffle=True)
+    cv_parms = {'bostonfeaturestransformer__degree': degree_range, 'linearregressor__reg_lambda': lambda_range}
+    cv_model = sklearn.model_selection.GridSearchCV(model, cv_parms, scoring='neg_mean_squared_error', cv=k_fold)
+    cv_model.fit(X, y)
+    best_params = model.get_params()
+    best_params.update((p, best_params[p]) for p in cv_parms.keys())
     # ========================
 
     return best_params
