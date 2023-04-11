@@ -31,20 +31,19 @@ class KNNClassifier(object):
         #     y_train.
         #  2. Save the number of classes as n_classes.
         # ====== YOUR CODE: ======
-        #raise NotImplementedError()
-        # ========================
         data_len = len(dl_train.dataset)
         y_train = torch.empty(data_len, 1)
         x_train = torch.empty(data_len, dl_train.dataset[0][0].shape[0])
-        count = 0
-        for img, label in dl_train.dataset:
-            x_train[count] = img
-            y_train[count] = label
-            count += 1
+        for i, (img, label) in enumerate(dl_train.dataset):
+            x_train[i] = img
+            y_train[i] = label
+            
         self.x_train = x_train
         self.y_train = y_train
         self.n_classes = torch.unique(y_train).shape[0]
-        return self
+        return self        
+        # ========================
+        
 
     def predict(self, x_test: Tensor):
         """
@@ -70,13 +69,11 @@ class KNNClassifier(object):
             #  - Set y_pred[i] to the most common class among them
             #  - Don't use an explicit loop.
             # ====== YOUR CODE: ======
-            #raise NotImplementedError()
-            # ========================
             close_sampl_indexes = torch.topk(dist_matrix.T[i], self.k, largest=False)[1]
             knn_class = self.y_train[close_sampl_indexes.T]
             y_pred[i] = torch.mode(knn_class, dim=0)[0]
+            # ========================
             
-
         return y_pred
 
 
@@ -121,12 +118,8 @@ def accuracy(y: Tensor, y_pred: Tensor):
     # TODO: Calculate prediction accuracy. Don't use an explicit loop.
     accuracy = None
     # ====== YOUR CODE: ======
-    #raise NotImplementedError()
-   #list_accur = [y[i] == y_pred[i] for i in range(len(y))]
-   #accuracy = sum(list_accur)/len(y)
-    diff = y - y_pred
-    accuracy = (y.shape[0] - torch.count_nonzero(diff)) / y.shape[0]
-    print(f"accuracy={accuracy}")
+    list_accur = [y[i] == y_pred[i] for i in range(len(y))]
+    accuracy = sum(list_accur)/len(y)
     # ========================
     return accuracy
 
@@ -144,7 +137,6 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
     """
 
     accuracies = []
-    size_per_fold = int(len(ds_train) / num_folds)
     
     for i, k in enumerate(k_choices):
         model = KNNClassifier(k)
@@ -156,20 +148,25 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
         #  then it won't be exactly k-fold CV since it will be a
         #  random split each iteration), or implement something else.
 
-        # ====== YOUR CODE: ======
-        #raise NotImplementedError()
-        fold_size = int(len(ds_train) // num_folds)
+        # ====== YOUR CODE: ======      
+        
+        fold_size = int(len(ds_train) / num_folds)
         accuracies.append([])
         index_listed = list(range(len(ds_train)))
         for j in range(num_folds):
-            dl_valid = DataLoader(dataset=ds_train, batch_size=fold_size,
-                                  sampler=torch.utils.data.SubsetRandomSampler(index_listed[j * fold_size:(j + 1) * fold_size]))
-            train_loader = DataLoader(dataset=ds_train, batch_size=(len(ds_train) - fold_size),
-                                      sampler=torch.utils.data.SubsetRandomSampler(index_listed[:j * fold_size] + index_listed[(j + 1) * fold_size:]))
+            train_indices = index_listed[:j * fold_size] + index_listed[(j + 1) * fold_size:]
+            val_indices = index_listed[j * fold_size : (j + 1) * fold_size]
+            
+            train_set = torch.utils.data.dataset.Subset(ds_train,train_indices)
+            val_set = torch.utils.data.dataset.Subset(ds_train,val_indices)
+        
+            valid_loader = DataLoader(dataset=val_set, batch_size=fold_size, shuffle=True)
+            train_loader = DataLoader(dataset=train_set, batch_size=(len(ds_train) - fold_size), shuffle=True)
             
             model.train(train_loader)
-            y_pred = model.predict(dataloader_utils.flatten(dl_valid)[0])
-            accuracies[i].append(accuracy(y_pred, dataloader_utils.flatten(dl_valid)[1]))
+            x_valid, y_valid = dataloader_utils.flatten(valid_loader)
+            y_pred = model.predict(x_valid)
+            accuracies[i].append(accuracy(y_pred, y_valid))
         # ========================
         
 

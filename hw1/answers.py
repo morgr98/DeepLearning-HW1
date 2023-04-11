@@ -33,7 +33,7 @@ part1_q2 = r"""
 **Your answer:**
 
 Yes, the friend approch is justified,
-becasue after adding regularization as much complex the w vector will be the bigger the error will be so the modle will get less complex function that fit the data so we will decrease the overfitting. by trying differents values of /lambda he will make sure the modle won't underfit.
+becasue after adding regularization as much complex the w vector will be the bigger the error will be so the modle will get less complex function that fit the data so we will decrease the overfitting. by trying differents values of lambda he will make sure the modle won't underfit.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -50,7 +50,7 @@ An equation: $e^{i\pi} -1 = 1$
 part2_q1 = r"""
 **Your answer:**
  
-not necessarily, when k is to big (for example when k = m (num of samples)) the modle predict each point to labled as the most common lable from all the samples, and its will let to poor accuracy. we can use cross-validation to get the best k usaully around 5.
+not necessarily, when k is to big (for example when k = m (num of samples) the modle predict each point to labled as the most common lable from all the samples, and its will let to poor accuracy. we can use cross-validation to get the best k usaully around 5.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -63,8 +63,8 @@ An equation: $e^{i\pi} -1 = 0$
 
 part2_q2 = r"""
 **Your answer:**
-1. in order to get an estimate the generalization error we need to run the modle on samples that the modle hasn't see before, if we will find the parameters values based on the all samples we will get overfitting.
-2. by choosing the best modle based on the test accurancy we useing the test set as part of our training modle so the modle is now tilted to fit the test set and we can not use the set test as aundipended set in order to astimate the generalization error. 
+1. in order to get an estimate the generalization error we need to run the modle on samples that the modle hasn't see before, if we will        find the parameters values based on the all samples we will get overfitting.
+2. by choosing the best modle based on the test accuracy we useing the test set as part of our training modle so the modle is now tilted to    fit the test set and we can not use the set test as aundipended set in order to astimate the generalization error. 
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
