@@ -105,7 +105,6 @@ As we can see in the example above, if in the data test there are some digits th
 2.
 The difference between this model to the KNN- model is that when the model make the predictions on the data test,
 the result in soft svm depends on all the data compared to in KNN that the result depends on only the k- cloests samples.
-The similar between them is that?
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -165,7 +164,9 @@ part4_q2 = r"""
 2. Yes we can, the a simple example is on 2-D with dots in distance 1 and 2 from center (0,0), dots with distance 1 gets the lable 1 and dots with distance 2 get the lable -1. 
    without more feature the model can't separate the dots but if we will add the fature $x_1^2 + x_2^2$ the model could split the data with the line y = 3 for example.
    
-3. ??????????
+3. if we are adding a non-linear features to our data, we will get that the decision boundary still be a hyperplane, but because the new features are non-linear, we can assume by looking them as more features in higher dimension.
+So, we will get a new hyperplane which will separate our data in this higher space.
+As a result, the new decision boundary probably will not be linear and because of that will not be a hyperplane in the orginial space.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
