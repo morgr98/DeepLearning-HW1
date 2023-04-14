@@ -11,11 +11,11 @@ math (delimited with $$).
 part1_q1 = r"""
 **Your answer:**
 
-1. false, we train our modle on the training set and there can be a case the train and test sets has distribution differences so the test error is diferent from the train error = in-sample error.
+1. false, we train our model on the training set and there can be a case the train and test sets has distribution differences so the test error is diferent from the train error = in-sample error.
 
-2. false, for example if we are in classification problem with 2 classe {1,-1} if we split the data that the test will be all the samples with lable 1 we will get a tilted modle that  give 1 to all the samples when its not the case.
+2. false, for example if we are in classification problem with 2 classe {1,-1} if we split the data that the train will be all the samples with lable 1 we will get a tilted model that give 1 to all the samples when its not the case.
 
-3. true, the cross validation is part of the learning rate so if we used the test set than the model is relaying on the test set so the test set is no longer valid for testing.
+3. true, the cross validation is part of the learning rate so if we used the test set than the model is relaying on the test set, so the test set is no longer valid for testing.
 
 4. false, after the cross validation we train the model on all the data with optimal hyperparameter and then we use the test set to get the proxy generalization error.
 
@@ -32,7 +32,7 @@ part1_q2 = r"""
 **Your answer:**
 
 No, our friend approch is not justified,
-we can't use the test set to tune hyperparameters for that we have the validation set. when we using the test set to choose the optimal $\lambda$ the test set is no longer valid as an proxy for the generalization error.
+we can't use the test set to tune hyperparameters, for that we have the validation set. when we using the test set to choose the optimal $\lambda$ the test set is no longer valid as an proxy for the generalization error.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -49,7 +49,7 @@ An equation: $e^{i\pi} -1 = 1$
 part2_q1 = r"""
 **Your answer:**
  
-not necessarily, when k is to big (for example when k = m (num of samples)) the modle predict each point to labled as the most common lable from all the samples, and its will let to poor accuracy. we can use cross-validation to get the best k.
+not necessarily, when k is to big (for example when k = m (num of samples)) the model predict each point to labled as the most common lable from all the samples, and its will let to poor accuracy. we can use cross-validation to get the best k.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -62,9 +62,9 @@ An equation: $e^{i\pi} -1 = 0$
 
 part2_q2 = r"""
 **Your answer:**
-1. in order to get an estimate the generalization error we need to run the modle on samples that the modle hasn't see before, if we will find the parameters values based on the all samples we will get overfitting. Especially in kNN when using k=1 we will get 100% accuracy because each dot is the closes neighbor of herself and that is not the case on unseen data.
+1. in order to estimate the generalization error we need to run the model on samples that the model hasn't see before, if we will find the parameters values based on the all training samples the optimal k will be 1 and we will get 100% accuracy because each dot is the closes neighbor of herself and that is not the case on unseen data. 
 
-2. by choosing the best modle based on the test accuracy we useing the test set as part of our training so the model is now tilted to fit the test set and we can not use the set test as an andipended set in order to astimate the generalization error. 
+2. by choosing the best model based on the test accuracy we useing the test set as part of our training so the model is now tilted to fit the test set and we can not use the set test as an andipended set in order to astimate the generalization error. 
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
